@@ -24,6 +24,7 @@
           nixpkgs-fmt.enable = true;
           statix.enable = true;
         };
+        settings.global.excludes = [ "vendor/*" ];
       }));
     in
     {
