@@ -2,95 +2,99 @@
   {
     "arguments": [
       "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-std=c99",
+      "-Isrc",
+      "-Ivendor",
+      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
+      "-Og",
+      "-o",
+      "build/debug/foo.o",
+      "src/foo.c"
+    ],
+    "directory": "/home/pope/Code/raylib-flecs-pong",
+    "file": "/home/pope/Code/raylib-flecs-pong/src/foo.c",
+    "output": "/home/pope/Code/raylib-flecs-pong/build/debug/foo.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-std=c99",
+      "-Isrc",
+      "-Ivendor",
+      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
+      "-Og",
+      "-o",
+      "build/debug/input.o",
+      "src/input.c"
+    ],
+    "directory": "/home/pope/Code/raylib-flecs-pong",
+    "file": "/home/pope/Code/raylib-flecs-pong/src/input.c",
+    "output": "/home/pope/Code/raylib-flecs-pong/build/debug/input.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-std=c99",
+      "-Isrc",
+      "-Ivendor",
+      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
+      "-Og",
+      "-o",
+      "build/debug/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/pope/Code/raylib-flecs-pong",
+    "file": "/home/pope/Code/raylib-flecs-pong/src/main.c",
+    "output": "/home/pope/Code/raylib-flecs-pong/build/debug/main.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-std=c99",
+      "-Isrc",
+      "-Ivendor",
+      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
+      "-Og",
+      "-o",
+      "build/debug/rendering.o",
+      "src/rendering.c"
+    ],
+    "directory": "/home/pope/Code/raylib-flecs-pong",
+    "file": "/home/pope/Code/raylib-flecs-pong/src/rendering.c",
+    "output": "/home/pope/Code/raylib-flecs-pong/build/debug/rendering.o"
+  },
+  {
+    "arguments": [
+      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
+      "-c",
       "-O2",
       "-std=gnu99",
-      "-c",
       "-o",
-      "flecs.o",
-      "flecs.c"
+      "build/flecs/flecs.o",
+      "vendor/flecs.c"
     ],
-    "directory": "/home/pope/Code/raylib-flecs-pong/vendor",
+    "directory": "/home/pope/Code/raylib-flecs-pong",
     "file": "/home/pope/Code/raylib-flecs-pong/vendor/flecs.c",
-    "output": "/home/pope/Code/raylib-flecs-pong/vendor/flecs.o"
-  },
-  {
-    "arguments": [
-      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
-      "-c",
-      "-g",
-      "-Wall",
-      "-Wextra",
-      "-pedantic",
-      "-std=c99",
-      "-Ivendor",
-      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
-      "vendor/flecs.o",
-      "-o",
-      "main",
-      "main.c"
-    ],
-    "directory": "/home/pope/Code/raylib-flecs-pong",
-    "file": "/home/pope/Code/raylib-flecs-pong/main.c",
-    "output": "/home/pope/Code/raylib-flecs-pong/main"
-  },
-  {
-    "arguments": [
-      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
-      "-c",
-      "-g",
-      "-Wall",
-      "-Wextra",
-      "-pedantic",
-      "-std=c99",
-      "-Ivendor",
-      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
-      "vendor/flecs.o",
-      "-o",
-      "main",
-      "foo.c"
-    ],
-    "directory": "/home/pope/Code/raylib-flecs-pong",
-    "file": "/home/pope/Code/raylib-flecs-pong/foo.c",
-    "output": "/home/pope/Code/raylib-flecs-pong/main"
-  },
-  {
-    "arguments": [
-      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
-      "-c",
-      "-g",
-      "-Wall",
-      "-Wextra",
-      "-pedantic",
-      "-std=c99",
-      "-Ivendor",
-      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
-      "vendor/flecs.o",
-      "-o",
-      "main",
-      "input.c"
-    ],
-    "directory": "/home/pope/Code/raylib-flecs-pong",
-    "file": "/home/pope/Code/raylib-flecs-pong/input.c",
-    "output": "/home/pope/Code/raylib-flecs-pong/main"
-  },
-  {
-    "arguments": [
-      "/nix/store/kp2j7yn0wzwq5piy494r54dafrh83s6s-gcc-wrapper-13.3.0/bin/gcc",
-      "-c",
-      "-g",
-      "-Wall",
-      "-Wextra",
-      "-pedantic",
-      "-std=c99",
-      "-Ivendor",
-      "-I/nix/store/lpkdh79lfyhdy63ffl2gx12d935caxhq-raylib-5.0/include",
-      "vendor/flecs.o",
-      "-o",
-      "main",
-      "rendering.c"
-    ],
-    "directory": "/home/pope/Code/raylib-flecs-pong",
-    "file": "/home/pope/Code/raylib-flecs-pong/rendering.c",
-    "output": "/home/pope/Code/raylib-flecs-pong/main"
+    "output": "/home/pope/Code/raylib-flecs-pong/build/flecs/flecs.o"
   }
 ]
