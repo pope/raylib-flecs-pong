@@ -12,5 +12,7 @@ Flecs.
   - https://mprtmma.medium.com/game-dev-journey-2-ae8a178ef914
   - https://github.com/PhaestusFox/ZeroToPong/
   - https://www.youtube.com/watch?v=cfWneHSph4E
+  - https://github.com/educ8s/Cpp-Pong-Game-Raylib
+  - https://www.youtube.com/watch?v=VLJlTaFvHo4
   - https://github.com/Y0L042/WastelandAdventures
   - https://github.com/robinheydon/ijo
