@@ -2,13 +2,20 @@
 
 #include <flecs.h>
 
-typedef struct
-{
-  float x, y;
-} Position, Velocity;
+#undef ECS_META_IMPL
+#ifndef FLECS_FOO_IMPL
+#define ECS_META_IMPL EXTERN // Ensure meta symbols are only defined once
+#endif
 
-extern ECS_COMPONENT_DECLARE (Position);
-extern ECS_COMPONENT_DECLARE (Velocity);
+ECS_STRUCT (Position, {
+  float x;
+  float y;
+});
+
+ECS_STRUCT (Velocity, {
+  float x;
+  float y;
+});
 
 void FooModuleImport (ecs_world_t *world);
 

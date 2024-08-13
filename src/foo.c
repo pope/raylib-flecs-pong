@@ -1,16 +1,15 @@
+#define FLECS_FOO_IMPL
+
 #include "foo.h"
 
 #include "rendering.h"
-
-ECS_COMPONENT_DECLARE (Position);
-ECS_COMPONENT_DECLARE (Velocity);
 
 void
 Move (ecs_iter_t *it)
 {
   Position *p = ecs_field (it, Position, 0);
   Velocity *v = ecs_field (it, Velocity, 1);
-  const WindowSize *ws = ecs_singleton_get(it->world, WindowSize);
+  const WindowSize *ws = ecs_singleton_get (it->world, WindowSize);
 
   for (int i = 0; i < it->count; i++)
     {
@@ -29,16 +28,8 @@ FooModuleImport (ecs_world_t *world)
 {
   ECS_MODULE (world, FooModule);
 
-  ECS_COMPONENT_DEFINE (world, Position);
-  ecs_struct (world,
-              { .entity = ecs_id (Position),
-                .members = { { .name = "x", .type = ecs_id (ecs_f32_t) },
-                             { .name = "y", .type = ecs_id (ecs_f32_t) } } });
-  ECS_COMPONENT_DEFINE (world, Velocity);
-  ecs_struct (world,
-              { .entity = ecs_id (Velocity),
-                .members = { { .name = "x", .type = ecs_id (ecs_f32_t) },
-                             { .name = "y", .type = ecs_id (ecs_f32_t) } } });
+  ECS_META_COMPONENT (world, Position);
+  ECS_META_COMPONENT (world, Velocity);
 
   ECS_SYSTEM (world, Move, EcsOnUpdate, Position, Velocity);
 
