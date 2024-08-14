@@ -16,11 +16,11 @@ SetupWindow (ecs_iter_t *it)
   const WindowFps *wfps = ecs_singleton_get (it->world, WindowFps);
 
   SetConfigFlags (FLAG_MSAA_4X_HINT);
-  InitWindow ((int)ws->dimensions.x, (int)ws->dimensions.y, wt->title);
+  InitWindow ((int)ws->x, (int)ws->y, wt->title);
   SetTargetFPS (wfps->target);
 
-  printf ("[rendering] width: %d, height: %d, title: '%s'\n",
-          (int)ws->dimensions.x, (int)ws->dimensions.y, wt->title);
+  printf ("[rendering] width: %d, height: %d, title: '%s'\n", (int)ws->x,
+          (int)ws->y, wt->title);
   printf ("[rendering] fps: %d\n", wfps->target);
 }
 
@@ -66,8 +66,7 @@ RenderingModuleImport (ecs_world_t *world)
   ECS_COMPONENT_DEFINE (world, WindowTitle);
   ECS_COMPONENT_DEFINE (world, WindowFps);
 
-  ecs_singleton_set (world, WindowSize,
-                     { .dimensions = { .x = 1280, .y = 720 } });
+  ecs_singleton_set (world, WindowSize, { .x = 1280, .y = 720 });
   ecs_singleton_set (world, WindowTitle, { .title = "Pong Thing" });
   ecs_singleton_set (world, WindowFps, { .target = 60 });
 

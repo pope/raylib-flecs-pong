@@ -3,10 +3,7 @@
 #include <flecs.h>
 #include <raylib.h>
 
-typedef struct
-{
-  Vector2 dimensions;
-} WindowSize;
+typedef Vector2 WindowSize;
 
 typedef struct
 {

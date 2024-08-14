@@ -10,16 +10,16 @@ Move (ecs_iter_t *it)
 {
   Position *p = ecs_field (it, Position, 0);
   Velocity *v = ecs_field (it, Velocity, 1);
-  const WindowSize *ws = ecs_singleton_get(it->world, WindowSize);
+  const WindowSize *ws = ecs_singleton_get (it->world, WindowSize);
 
   for (int i = 0; i < it->count; i++)
     {
       p[i].x += v[i].x;
       p[i].y += v[i].y;
 
-      if (p[i].x + 20.0f >= ws->dimensions.x || p[i].x - 20.0f <= 0)
+      if (p[i].x + 20.0f >= ws->x || p[i].x - 20.0f <= 0)
         v[i].x *= -1;
-      if (p[i].y + 20.0f >= ws->dimensions.y || p[i].y - 20.0f <= 0)
+      if (p[i].y + 20.0f >= ws->y || p[i].y - 20.0f <= 0)
         v[i].y *= -1;
     }
 }
