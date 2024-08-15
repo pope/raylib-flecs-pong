@@ -1,40 +1,23 @@
 #include <flecs.h>
 #include <raylib.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-#include "foo.h"
-#include "input.h"
-#include "rendering.h"
+#include "pong.h"
 
 int
 main (void)
 {
-  ecs_world_t *world = ecs_init ();
+  SetConfigFlags (FLAG_MSAA_4X_HINT);
+  InitWindow (WINDOW_WIDTH, WINDOW_HEIGHT, "Pope Pong");
+  SetTargetFPS (60);
 
-  ecs_set_threads (world, 8);
-  ecs_log_set_level (-1);
-  ecs_log_enable_colors (true);
+  setup_world ();
 
-  ecs_singleton_set (world, EcsRest, { 0 });
-  ECS_IMPORT (world, FlecsStats);
-
-  ECS_IMPORT (world, InputModule);
-  ECS_IMPORT (world, FooModule);
-  ECS_IMPORT (world, RenderingModule);
-
-  while (ecs_progress (world, 0.0))
+  while (!WindowShouldClose () && run_game_loop ())
     {
     }
 
-  ecs_entity_t e = ecs_lookup (world, "foo.module.Ball");
-  assert (e);
-  const Position *p = ecs_get (world, e, Position);
-  assert (p);
-
-  printf ("[end] Pos: %.2f, %.2f\n", (double)p->x, (double)p->y);
-
-  ecs_fini (world);
+  cleanup_world ();
   CloseWindow ();
 
   return EXIT_SUCCESS;
