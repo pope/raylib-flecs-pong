@@ -149,13 +149,13 @@ setup_world (void)
   // Game objects
 
   {
-    ecs_entity_t e = ecs_entity (world, { .name = "Ball#1" });
+    ecs_entity_t e = ecs_entity (world, { .name = "obj.Ball" });
     ecs_set (world, e, Position, { WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0 });
     ecs_set (world, e, Velocity, { 6, 6 });
     ecs_add_id (world, e, Ball);
   }
   {
-    ecs_entity_t e = ecs_entity (world, { .name = "Player#1" });
+    ecs_entity_t e = ecs_entity (world, { .name = "obj.Player" });
     ecs_set (world, e, Position,
              { PADDLE_GAP, WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0 });
     ecs_set (world, e, Velocity, { 0, 6 });
@@ -163,7 +163,7 @@ setup_world (void)
     ecs_add_id (world, e, Paddle);
   }
   {
-    ecs_entity_t e = ecs_entity (world, { .name = "Cpu#1" });
+    ecs_entity_t e = ecs_entity (world, { .name = "obj.Cpu" });
     ecs_set (world, e, Position,
              { WINDOW_WIDTH - PADDLE_WIDTH - PADDLE_GAP,
                WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0 });
