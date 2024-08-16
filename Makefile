@@ -1,5 +1,7 @@
 PKGS = raylib
 
+OPT_FLAGS = -O3 -flto=auto -m64 -march=native -mtune=native
+
 CFLAGS += -g -Wall -Wextra -pedantic -std=c99 
 CFLAGS += -Isrc -Ivendor
 CFLAGS += $(shell pkg-config --cflags $(PKGS))
@@ -15,14 +17,13 @@ RELEASE_OBJS = $(patsubst src/%.c, build/release/%.o, $(SRCS))
 DEBUG_EXE = build/debug/main
 RELEASE_EXE = build/release/main
 
-DEBUG_CFLAGS += $(CFLAGS)
-DEBUG_CFLAGS += -Og
+DEBUG_CFLAGS += $(CFLAGS) -Og
 
 RELEASE_CFLAGS += $(CFLAGS)
-RELEASE_CFLAGS += -DNDEBUG -O2
+RELEASE_CFLAGS += -DNDEBUG $(OPT_FLAGS)
 
 FLECS_OBJS += build/flecs/flecs.o
-FLECS_CFLAGS += -O2 -std=gnu99
+FLECS_CFLAGS += -std=gnu99 $(OPT_FLAGS)
 
 debug: $(DEBUG_EXE)
 release: $(RELEASE_EXE)
@@ -37,7 +38,7 @@ $(DEBUG_EXE): $(DEBUG_OBJS) $(FLECS_OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 
 $(RELEASE_EXE): $(RELEASE_OBJS) $(FLECS_OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) $(OPT_FLAGS) $^ -o $@
 
 build/debug/%.o: src/%.c $(DEPS) Makefile | build
 	$(CC) -c $(DEBUG_CFLAGS) $< -o $@
