@@ -1,5 +1,6 @@
 #include "pong.h"
 
+#include <flecs.h>
 #include <raylib.h>
 #include <sys/param.h>
 

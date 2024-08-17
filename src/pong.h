@@ -1,7 +1,5 @@
 #pragma once
 
-#include <flecs.h>
-#include <raylib.h>
 #include <stdbool.h>
 
 // TODO(pope): Maybe we don't need these if we can use GetScreenWidth() and
