@@ -20,8 +20,6 @@ ECS_STRUCT (Player, {
   int32_t down_key;
 });
 
-static ecs_world_t *world;
-
 static void
 CheckPause (ecs_iter_t *it)
 {
@@ -169,18 +167,9 @@ RenderPaddle (ecs_iter_t *it)
 }
 
 void
-setup_world (void)
+setup_pong (ecs_world_t *world)
 {
-  world = ecs_init ();
-
-  ecs_set_threads (world, 2);
-  ecs_log_set_level (-1);
-  ecs_log_enable_colors (true);
-
   // Definitions
-
-  ecs_singleton_set (world, EcsRest, { 0 });
-  ECS_IMPORT (world, FlecsStats);
 
   ECS_COMPONENT (world, Position);
   ecs_struct (world,
@@ -263,19 +252,4 @@ setup_world (void)
                 OnRendering, [in] Position, [none] Paddle);
     ECS_SYSTEM (world, EndRendering, PostRendering, 0);
   }
-}
-
-void
-cleanup_world (void)
-{
-  assert (world);
-  ecs_fini (world);
-  world = NULL;
-}
-
-bool
-run_game_loop (void)
-{
-  assert (world);
-  return ecs_progress (world, 0.0);
 }
