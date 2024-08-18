@@ -2,17 +2,17 @@ PKGS = raylib
 
 OPT_FLAGS = -O3 -flto=auto -m64 -march=native -mtune=native
 
-CFLAGS += -g -Wall -Wextra -pedantic -std=c99 
+CFLAGS += -g -Wall -Wextra -pedantic -std=c++20
 CFLAGS += -Isrc -Ivendor
 CFLAGS += $(shell pkg-config --cflags $(PKGS))
 
 LDFLAGS += $(shell pkg-config --libs $(PKGS))
 
-SRCS = $(wildcard src/*.c)
+SRCS = $(wildcard src/*.cc)
 DEPS = $(wildcard src/*.h)
 
-DEBUG_OBJS = $(patsubst src/%.c, build/debug/%.o, $(SRCS))
-RELEASE_OBJS = $(patsubst src/%.c, build/release/%.o, $(SRCS))
+DEBUG_OBJS = $(patsubst src/%.cc, build/debug/%.o, $(SRCS))
+RELEASE_OBJS = $(patsubst src/%.cc, build/release/%.o, $(SRCS))
 
 DEBUG_EXE = build/debug/main
 RELEASE_EXE = build/release/main
@@ -35,16 +35,16 @@ run_release: $(RELEASE_EXE)
 	./$<
 
 $(DEBUG_EXE): $(DEBUG_OBJS) $(FLECS_OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $^ -o $@
 
 $(RELEASE_EXE): $(RELEASE_OBJS) $(FLECS_OBJS)
-	$(CC) $(LDFLAGS) $(OPT_FLAGS) $^ -o $@
+	$(CXX) $(LDFLAGS) $(OPT_FLAGS) $^ -o $@
 
-build/debug/%.o: src/%.c $(DEPS) Makefile | build
-	$(CC) -c $(DEBUG_CFLAGS) $< -o $@
+build/debug/%.o: src/%.cc $(DEPS) Makefile | build
+	$(CXX) -c $(DEBUG_CFLAGS) $< -o $@
 
-build/release/%.o: src/%.c $(DEPS) Makefile | build
-	$(CC) -c $(RELEASE_CFLAGS) $< -o $@
+build/release/%.o: src/%.cc $(DEPS) Makefile | build
+	$(CXX) -c $(RELEASE_CFLAGS) $< -o $@
 
 build/flecs/flecs.o: vendor/flecs.c Makefile | build
 	$(CC) -c $(FLECS_CFLAGS) $< -o $@

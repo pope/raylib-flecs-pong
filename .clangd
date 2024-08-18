@@ -5,6 +5,7 @@ CompileFlags:
     -Wpedantic,
     -Weverything,
     -Wno-declaration-after-statement,
+    -Wno-c++98-compat,
   ]
 InlayHints:
   Enabled: Yes
