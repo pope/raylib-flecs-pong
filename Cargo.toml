@@ -1,0 +1,8 @@
+[package]
+name = "raylib-flecs-pong"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+flecs_ecs = "0.1.3"
+raylib = { version = "5.0.1", features = ["wayland"] }
