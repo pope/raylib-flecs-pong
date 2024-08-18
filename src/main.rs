@@ -76,8 +76,9 @@ fn main() {
 	world.import::<flecs_ecs::addons::stats::Stats>();
 
 	// Systems
-	let mut ball_query = world.new_query::<(&Position, &Ball)>();
-	let mut collisions_query = world.new_query::<(&Position, &Paddle)>();
+	let mut ball_query = world.query::<&Position>().with::<&Ball>().build();
+	let mut collisions_query =
+		world.query::<&Position>().with::<&Paddle>().build();
 	{
 		world
 			.system_named::<()>("CheckPause")
@@ -93,9 +94,10 @@ fn main() {
 				}
 			});
 		world
-			.system_named::<(&mut Position, &mut Velocity, &Ball)>("MoveBall")
+			.system_named::<(&mut Position, &mut Velocity)>("MoveBall")
+			.with::<&Ball>()
 			.kind::<OnUpdate>()
-			.each(|(p, v, _b)| {
+			.each(|(p, v)| {
 				p.x += v.x;
 				p.y += v.y;
 
@@ -130,16 +132,15 @@ fn main() {
 				);
 			});
 		world
-			.system_named::<(&mut Position, &Velocity, &Cpu)>("MoveCpu")
+			.system_named::<(&mut Position, &Velocity)>("MoveCpu")
+			.with::<&Cpu>()
 			.set_context(
-				&mut ball_query as *mut Query<(&Position, &Ball)>
-					as *mut c_void,
+				&mut ball_query as *mut Query<&Position> as *mut c_void,
 			)
 			.kind::<OnUpdate>()
-			.each_iter(|mut it, _index, (cpu_p, cpu_v, _cpu)| {
-				let ball_query =
-					unsafe { it.context::<Query<(&Position, &Ball)>>() };
-				ball_query.each(|(ball_p, _ball)| {
+			.each_iter(|mut it, _index, (cpu_p, cpu_v)| {
+				let ball_query = unsafe { it.context::<Query<&Position>>() };
+				ball_query.each(|ball_p| {
 					let dir = if cpu_p.y + PADDLE_HEIGHT as f32 / 2. > ball_p.y
 					{
 						-1.
@@ -155,18 +156,16 @@ fn main() {
 				);
 			});
 		world
-			.system_named::<(&Position, &mut Velocity, &Ball)>(
-				"CheckCollisions",
-			)
+			.system_named::<(&Position, &mut Velocity)>("CheckCollisions")
+			.with::<&Ball>()
 			.set_context(
-				&mut collisions_query as *mut Query<(&Position, &Paddle)>
-					as *mut c_void,
+				&mut collisions_query as *mut Query<&Position> as *mut c_void,
 			)
 			.kind::<OnValidate>()
-			.each_iter(|mut it, _index, (ball_p, ball_v, _ball)| {
+			.each_iter(|mut it, _index, (ball_p, ball_v)| {
 				let collisions_query =
-					unsafe { it.context::<Query<(&Position, &Paddle)>>() };
-				collisions_query.each(|(paddle_p, _paddle)| {
+					unsafe { it.context::<Query<&Position>>() };
+				collisions_query.each(|paddle_p| {
 					let rec = Rectangle {
 						x: paddle_p.x,
 						y: paddle_p.y,
