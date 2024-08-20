@@ -40,8 +40,8 @@ MoveBall (ecs_iter_t *it)
 
   for (int i = 0; i < it->count; i++)
     {
-      p[i].x += v[i].x;
-      p[i].y += v[i].y;
+      p[i].x += v[i].x * it->delta_time;
+      p[i].y += v[i].y * it->delta_time;
 
       if ((p[i].x + BALL_RADIUS >= WINDOW_WIDTH) | (p[i].x - BALL_RADIUS <= 0))
         v[i].x *= -1;
@@ -60,13 +60,13 @@ MovePlayer (ecs_iter_t *it)
 
   for (int i = 0; i < it->count; i++)
     {
-      char dir = 0;
+      float dir = 0;
       if (IsKeyDown (player[i].up_key))
         dir--;
       if (IsKeyDown (player[i].down_key))
         dir++;
 
-      p[i].y += v[i].y * dir;
+      p[i].y += v[i].y * dir * it->delta_time;
       p[i].y = CLAMP (p[i].y, PADDLE_GAP,
                       WINDOW_HEIGHT - PADDLE_HEIGHT - PADDLE_GAP);
     }
@@ -87,8 +87,9 @@ MoveCpu (ecs_iter_t *it)
 
           for (int j = 0; j < ball_it.count; j++)
             {
-              char dir
-                  = (cpu_p[i].y + PADDLE_HEIGHT / 2.0f > ball_p[j].y) ? -1 : 1;
+              float dir = (cpu_p[i].y + PADDLE_HEIGHT / 2.0f > ball_p[j].y)
+                              ? -it->delta_time
+                              : it->delta_time;
               cpu_p[i].y += cpu_v[i].y * dir;
             }
         }
@@ -191,14 +192,14 @@ setup_pong (ecs_world_t *world)
   {
     ecs_entity_t e = ecs_entity (world, { .name = "obj.Ball" });
     ecs_set (world, e, Position, { WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0 });
-    ecs_set (world, e, Velocity, { 7, 7 });
+    ecs_set (world, e, Velocity, { 7 * 60, 7 * 60 });
     ecs_add_id (world, e, Ball);
   }
   {
     ecs_entity_t e = ecs_entity (world, { .name = "obj.Player" });
     ecs_set (world, e, Position,
              { PADDLE_GAP, WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0 });
-    ecs_set (world, e, Velocity, { 0, 5 });
+    ecs_set (world, e, Velocity, { 0, 5 * 60 });
     ecs_set (world, e, Player, { KEY_W, KEY_S });
     ecs_add_id (world, e, Paddle);
   }
@@ -207,7 +208,7 @@ setup_pong (ecs_world_t *world)
     ecs_set (world, e, Position,
              { WINDOW_WIDTH - PADDLE_WIDTH - PADDLE_GAP,
                WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0 });
-    ecs_set (world, e, Velocity, { 0, 5 });
+    ecs_set (world, e, Velocity, { 0, 5 * 60 });
     ecs_add_id (world, e, Paddle);
     ecs_add_id (world, e, Cpu);
   }
