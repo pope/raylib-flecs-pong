@@ -18960,6 +18960,7 @@ ecs_type_info_t* flecs_type_info_ensure(
             &world->type_info, ecs_type_info_t, component);
         ecs_assert(ti_mut != NULL, ECS_INTERNAL_ERROR, NULL);
         ti_mut->component = component;
+        ti_mut->world = world;
     } else {
         ti_mut = ECS_CONST_CAST(ecs_type_info_t*, ti);
     }
@@ -42074,8 +42075,12 @@ void flecs_json_serialize_query_plan(
 
     bool prev_color = ecs_log_enable_colors(true);
     char *plan = ecs_query_plan(q);
-    flecs_json_string_escape(buf, plan);
-    ecs_os_free(plan);
+    if (plan) {
+        flecs_json_string_escape(buf, plan);
+        ecs_os_free(plan);
+    } else {
+        flecs_json_null(buf);
+    }
     ecs_log_enable_colors(prev_color);
 }
 
