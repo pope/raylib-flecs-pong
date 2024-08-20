@@ -1,6 +1,11 @@
 PKGS = raylib
 
-OPT_FLAGS = -O3 -flto=auto -m64 -march=native -mtune=native
+UNAME_S := $(shell uname -s)
+
+OPT_FLAGS = -O3
+ifeq ($(UNAME_S),Linux)
+	OPT_FLAGS += -flto=auto -m64 -march=native -mtune=native
+endif
 
 CFLAGS += -g -Wall -Wextra -pedantic -std=c++20
 CFLAGS += -Isrc -Ivendor
