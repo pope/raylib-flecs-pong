@@ -38,9 +38,10 @@ static void CheckPause(flecs::iter &it) {
   }
 }
 
-static void MoveBall(Position &p, Velocity &v) {
-  p.x += v.x;
-  p.y += v.y;
+static void MoveBall(flecs::iter &it, size_t i, Position &p, Velocity &v) {
+  (void)i;
+  p.x += v.x * it.delta_time();
+  p.y += v.y * it.delta_time();
 
   if ((p.x + BALL_RADIUS >= WINDOW_WIDTH) | (p.x - BALL_RADIUS <= 0)) {
     v.x *= -1;
@@ -50,12 +51,14 @@ static void MoveBall(Position &p, Velocity &v) {
   }
 }
 
-static void MovePlayer(Position &p, const Velocity &v, const Player &player) {
+static void MovePlayer(flecs::iter &it, size_t i, Position &p,
+                       const Velocity &v, const Player &player) {
+  (void)i;
   char dir = 0;
   if (IsKeyDown(player.up_key)) dir--;
   if (IsKeyDown(player.down_key)) dir++;
 
-  p.y += v.y * dir;
+  p.y += v.y * dir * it.delta_time();
   p.y = CLAMP(p.y, PADDLE_GAP, WINDOW_HEIGHT - PADDLE_HEIGHT - PADDLE_GAP);
 }
 
@@ -68,7 +71,7 @@ static void MoveCpu(flecs::iter &it, size_t i, Position &cpu_p,
   auto ball_q = it.world().query_builder<const Position>().with<Ball>().build();
   ball_q.each([&](const Position &ball_p) {
     char dir = (cpu_p.y + PADDLE_HEIGHT / 2.0f > ball_p.y) ? -1 : 1;
-    cpu_p.y += cpu_v.y * dir;
+    cpu_p.y += cpu_v.y * dir * it.delta_time();
   });
   cpu_p.y =
       CLAMP(cpu_p.y, PADDLE_GAP, WINDOW_HEIGHT - PADDLE_HEIGHT - PADDLE_GAP);
@@ -131,17 +134,17 @@ void setup_pong(flecs::world &world) {
   {
     world.entity("obj.Ball")
         .set<Position>({WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0})
-        .set<Velocity>({7, 7})
+        .set<Velocity>({7 * 60, 7 * 60})
         .add<Ball>();
     world.entity("obj.Player")
         .set<Position>({PADDLE_GAP, WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0})
-        .set<Velocity>({0, 5})
+        .set<Velocity>({0, 5 * 60})
         .set<Player>({KeyboardKey::KEY_W, KeyboardKey::KEY_S})
         .add<Paddle>();
     world.entity("obj.Cpu")
         .set<Position>({WINDOW_WIDTH - PADDLE_WIDTH - PADDLE_GAP,
                         WINDOW_HEIGHT / 2.0 - PADDLE_HEIGHT / 2.0})
-        .set<Velocity>({0, 5})
+        .set<Velocity>({0, 5 * 60})
         .add<Cpu>()
         .add<Paddle>();
   }
