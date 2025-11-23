@@ -28,7 +28,7 @@ struct Ball {};
 struct Paddle {};
 struct Cpu {};
 
-static void CheckPause(flecs::iter &it) {
+static void CheckPause(flecs::iter& it) {
   if (IsKeyPressed(KEY_P)) {
     auto e = it.world().entity(flecs::OnUpdate);
     if (e.has(flecs::Disabled))
@@ -38,7 +38,7 @@ static void CheckPause(flecs::iter &it) {
   }
 }
 
-static void MoveBall(flecs::iter &it, size_t i, Position &p, Velocity &v) {
+static void MoveBall(flecs::iter& it, size_t i, Position& p, Velocity& v) {
   (void)i;
   p.x += v.x * it.delta_time();
   p.y += v.y * it.delta_time();
@@ -51,8 +51,8 @@ static void MoveBall(flecs::iter &it, size_t i, Position &p, Velocity &v) {
   }
 }
 
-static void MovePlayer(flecs::iter &it, size_t i, Position &p,
-                       const Velocity &v, const Player &player) {
+static void MovePlayer(flecs::iter& it, size_t i, Position& p,
+                       const Velocity& v, const Player& player) {
   (void)i;
   char dir = 0;
   if (IsKeyDown(player.up_key)) dir--;
@@ -62,14 +62,14 @@ static void MovePlayer(flecs::iter &it, size_t i, Position &p,
   p.y = CLAMP(p.y, PADDLE_GAP, WINDOW_HEIGHT - PADDLE_HEIGHT - PADDLE_GAP);
 }
 
-static void MoveCpu(flecs::iter &it, size_t i, Position &cpu_p,
-                    const Velocity &cpu_v) {
+static void MoveCpu(flecs::iter& it, size_t i, Position& cpu_p,
+                    const Velocity& cpu_v) {
   (void)i;
   // TODO(pope): Figure out how to use a query as a context.
   // My current issue is that the created query will go out of scope and then
   // get destructed.
   auto ball_q = it.world().query_builder<const Position>().with<Ball>().build();
-  ball_q.each([&](const Position &ball_p) {
+  ball_q.each([&](const Position& ball_p) {
     char dir = (cpu_p.y + PADDLE_HEIGHT / 2.0f > ball_p.y) ? -1 : 1;
     cpu_p.y += cpu_v.y * dir * it.delta_time();
   });
@@ -77,13 +77,13 @@ static void MoveCpu(flecs::iter &it, size_t i, Position &cpu_p,
       CLAMP(cpu_p.y, PADDLE_GAP, WINDOW_HEIGHT - PADDLE_HEIGHT - PADDLE_GAP);
 }
 
-static void CheckCollisions(flecs::iter &it, size_t i, const Position &ball_p,
-                            Velocity &ball_v) {
+static void CheckCollisions(flecs::iter& it, size_t i, const Position& ball_p,
+                            Velocity& ball_v) {
   (void)i;
   // TODO(pope): Figure out how to use a query as a context.
   auto collision_q =
       it.world().query_builder<const Position>().with<Paddle>().build();
-  collision_q.each([&](const Position &paddle_p) {
+  collision_q.each([&](const Position& paddle_p) {
     Rectangle r = {paddle_p.x, paddle_p.y, PADDLE_WIDTH, PADDLE_HEIGHT};
     Vector2 v = {ball_p.x, ball_p.y};
     if (CheckCollisionCircleRec(v, BALL_RADIUS, r)) {
@@ -92,19 +92,19 @@ static void CheckCollisions(flecs::iter &it, size_t i, const Position &ball_p,
   });
 }
 
-static void BeginRendering(flecs::iter &it) {
+static void BeginRendering(flecs::iter& it) {
   (void)it;
   BeginDrawing();
   ClearBackground(BLACK);
 }
 
-static void EndRendering(flecs::iter &it) {
+static void EndRendering(flecs::iter& it) {
   (void)it;
   DrawFPS(WINDOW_WIDTH - 100, 20);
   EndDrawing();
 }
 
-static void RenderBackground(flecs::iter &it) {
+static void RenderBackground(flecs::iter& it) {
   (void)it;
   DrawLine(WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4, WHITE);
   DrawLine(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 4 * 3, WINDOW_WIDTH / 2,
@@ -113,16 +113,16 @@ static void RenderBackground(flecs::iter &it) {
                   WHITE);
 }
 
-static void RenderBall(const Position &p) {
+static void RenderBall(const Position& p) {
   DrawCircle(static_cast<int>(p.x), static_cast<int>(p.y), BALL_RADIUS, WHITE);
 }
 
-static void RenderPaddle(const Position &p) {
+static void RenderPaddle(const Position& p) {
   DrawRectangle(static_cast<int>(p.x), static_cast<int>(p.y), PADDLE_WIDTH,
                 PADDLE_HEIGHT, WHITE);
 }
 
-void setup_pong(flecs::world &world) {
+void setup_pong(flecs::world& world) {
   // Definitions
   world.component<Position>().member<float>("x").member<float>("y");
   world.component<Velocity>().member<float>("x").member<float>("y");

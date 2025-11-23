@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-void setup_pong(flecs::world &world);
+void setup_pong(flecs::world& world);
 
 #ifdef __cplusplus
 }
