@@ -14,38 +14,59 @@
     };
   };
 
-  outputs = { nixpkgs, systems, rust-overlay, treefmt-nix, ... }:
+  outputs =
+    {
+      nixpkgs,
+      systems,
+      rust-overlay,
+      treefmt-nix,
+      ...
+    }:
     let
       overlays = [ (import rust-overlay) ];
-      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f
-        (import nixpkgs {
-          inherit system overlays;
-          config = { };
+      eachSystem =
+        f:
+        nixpkgs.lib.genAttrs (import systems) (
+          system:
+          f (
+            import nixpkgs {
+              inherit system overlays;
+              config = { };
+            }
+          )
+        );
+      treefmtEval = eachSystem (
+        pkgs:
+        treefmt-nix.lib.evalModule pkgs (_: {
+          projectRootFile = "flake.nix";
+          programs = {
+            deadnix.enable = true;
+            nixfmt.enable = true;
+            rustfmt.enable = true;
+            statix.enable = true;
+          };
         })
       );
-      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs (_: {
-        projectRootFile = "flake.nix";
-        programs = {
-          deadnix.enable = true;
-          nixpkgs-fmt.enable = true;
-          statix.enable = true;
-        };
-      }));
     in
     {
-      devShells = eachSystem (pkgs:
-        {
-          default = with pkgs; mkShell rec {
+      devShells = eachSystem (pkgs: {
+        default =
+          with pkgs;
+          mkShell rec {
             nativeBuildInputs = [
               clang
               cmake
+              cargo-outdated
               pkg-config
               rust-analyzer
               rust-bin.stable.latest.default
               rustfmt
-              treefmtEval.${system}.config.build.wrapper
+              treefmtEval.${stdenv.hostPlatform.system}.config.build.wrapper
             ];
-            buildInputs = [glfw] ++ lib.optionals stdenv.isLinux [
+            buildInputs = [
+              glfw
+            ]
+            ++ lib.optionals stdenv.isLinux [
               alsa-lib
               libGL
               libGLU
@@ -62,13 +83,12 @@
             LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
             LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
           };
-        }
-      );
+      });
 
-      formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+      formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
       checks = eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.system}.config.build.wrapper;
+        formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper;
       });
     };
 }

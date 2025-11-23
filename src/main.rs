@@ -1,8 +1,8 @@
 use ffi::{CheckCollisionCircleRec, IsKeyDown, IsKeyPressed, Rectangle};
 use flecs::{
+	Disabled,
 	pipeline::{OnUpdate, OnValidate, PreUpdate},
 	rest::Rest,
-	Disabled,
 };
 use flecs_ecs::prelude::*;
 use raylib::prelude::*;
@@ -55,11 +55,7 @@ where
 	T: PartialOrd,
 {
 	let d = if min > input { min } else { input };
-	if max < d {
-		max
-	} else {
-		d
-	}
+	if max < d { max } else { d }
 }
 
 fn main() {
