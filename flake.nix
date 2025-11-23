@@ -12,56 +12,74 @@
     };
   };
 
-  outputs = { nixpkgs, systems, treefmt-nix, ... }:
+  outputs =
+    {
+      nixpkgs,
+      systems,
+      treefmt-nix,
+      ...
+    }:
     let
-      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f
-        (import nixpkgs {
-          inherit system;
-          config = { };
+      eachSystem =
+        f:
+        nixpkgs.lib.genAttrs (import systems) (
+          system:
+          f (
+            import nixpkgs {
+              inherit system;
+              config = { };
+            }
+          )
+        );
+      treefmtEval = eachSystem (
+        pkgs:
+        treefmt-nix.lib.evalModule pkgs (_: {
+          projectRootFile = "flake.nix";
+          programs = {
+            clang-format.enable = true;
+            deadnix.enable = true;
+            nixfmt.enable = true;
+            statix.enable = true;
+          };
+          settings.global.excludes = [ "vendor/*" ];
         })
       );
-      treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs (_: {
-        projectRootFile = "flake.nix";
-        programs = {
-          clang-format.enable = true;
-          deadnix.enable = true;
-          nixpkgs-fmt.enable = true;
-          statix.enable = true;
-        };
-        settings.global.excludes = [ "vendor/*" ];
-      }));
     in
     {
       devShells = eachSystem (pkgs: {
-        default = with pkgs; mkShell {
-          packages = [
-            bear
-            clang-tools
-            lldb
-            treefmtEval.${system}.config.build.wrapper
-          ] ++ lib.optionals stdenv.isLinux [
-            gdb
-            linuxPackages.perf
-            vulkan-tools
-            vulkan-tools-lunarg
-          ];
-          # There appears to be an issue when using wayland for me. Without
-          # this, the window doesn't show up.
-          shellHook = ''
-            unset WAYLAND_DISPLAY
-          '';
-          nativeBuildInputs = [
-            pkg-config
-          ];
-          buildInputs = [
-            raylib
-          ];
-          LD_LIBRARY_PATH = lib.makeLibraryPath [
-            libxkbcommon
-            vulkan-loader
-            wayland
-          ];
-        };
+        default =
+          with pkgs;
+          mkShell {
+            packages = [
+              bear
+              clang-tools
+              lldb
+              treefmtEval.${stdenv.hostPlatform.system}.config.build.wrapper
+            ]
+            ++ lib.optionals stdenv.isLinux [
+              gdb
+              perf
+              vulkan-tools
+              vulkan-tools-lunarg
+            ];
+            # There appears to be an issue when using wayland for me. Without
+            # this, the window doesn't show up.
+            shellHook = ''
+              unset WAYLAND_DISPLAY
+            '';
+            nativeBuildInputs = [
+              pkg-config
+            ];
+            buildInputs = [
+              raylib
+            ];
+            LD_LIBRARY_PATH = lib.makeLibraryPath [
+              libxkbcommon
+              vulkan-loader
+              wayland
+            ];
+            NIX_ENFORCE_NO_NATIVE = 0;
+          };
       });
     };
 }
